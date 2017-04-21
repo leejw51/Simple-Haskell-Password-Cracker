@@ -114,7 +114,7 @@ incrementString s = reverse (intern (reverse s)) where
 			c : rest
 
 allStrings :: [String]
-allStrings = intern "a" where
+allStrings = "": (intern "a") where
 	intern :: String -> [String]
 	intern s = let s2 = incrementString s in
 		s : (intern s2)
@@ -128,6 +128,9 @@ checkHash s h = if (hash (packChars s)) == h
 
 parallelize :: Data.ByteString.Internal.ByteString -> String
 parallelize h = (foldr (++) [] (runEval (parBuffer 10 rseq (map (\x -> checkHash x h) (allStrings))))) !! 0
+-- My understanding of this:
+-- rseq tells parBuffer to fully evaluate everying in the buffer that parBuffer makes, and
+-- parBuffer bites off 10 elements from the list, runs them in parallel and then, if needed, rips off another ten until "!! 0" is satisfied.
 
 main :: IO()
 main = do

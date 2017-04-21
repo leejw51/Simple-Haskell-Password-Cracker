@@ -1,0 +1,2 @@
+* Solve the problem of eventlog files being too big for threadscope to open.
+* Make it faster.
