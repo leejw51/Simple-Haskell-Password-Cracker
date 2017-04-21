@@ -127,7 +127,7 @@ checkHash s h = if (hash (packChars s)) == h
 		[]
 
 parallelize :: Data.ByteString.Internal.ByteString -> String
-parallelize h = (foldr (++) [] (runEval (evalBuffer 10 rpar (map (\x -> checkHash x h) (allStrings))))) !! 0
+parallelize h = (foldr (++) [] (runEval (parBuffer 10 rseq (map (\x -> checkHash x h) (allStrings))))) !! 0
 
 main :: IO()
 main = do
