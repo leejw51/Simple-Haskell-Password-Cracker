@@ -5,6 +5,7 @@ import Data.ByteString.Internal
 import Data.ByteString.Base16
 import Control.Parallel.Strategies
 import System.Environment
+import GHC.Conc
 
 incrementChar :: Char -> Char
 incrementChar c = i c where
@@ -127,10 +128,15 @@ checkHash s h = if (hash (packChars s)) == h
 		[]
 
 parallelize :: Data.ByteString.Internal.ByteString -> String
-parallelize h = (foldr (++) [] (runEval (parBuffer 10 rseq (map (\x -> checkHash x h) (allStrings))))) !! 0
--- My understanding of this:
--- rseq tells parBuffer to fully evaluate everying in the buffer that parBuffer makes, and
--- parBuffer bites off 10 elements from the list, runs them in parallel and then, if needed, rips off another ten until "!! 0" is satisfied.
+parallelize h = do
+    let hashed = (map (\x -> checkHash x h) allStrings) `using` (parBuffer numCapabilities rdeepseq ) 
+    {-
+        r0 : no parallelism
+        rpar : mark expression to possibly be evaluated (at the risk of overflowing the spark pool)
+        rseq : evaluate expression one level
+        rdeepseq : evaluate expression all the way 
+    -}
+    (foldr (++) [] hashed) !! 0
 
 main :: IO()
 main = do
