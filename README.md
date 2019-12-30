@@ -1,6 +1,2 @@
-What's This?
-============
-
-This is just a small toy password cracker to learn how to do parallelization in haskell.
-You pass it the sha1sum of the password you're trying to crack and it uses parallelization to brute force it.
-It's not very good and it doesn't even crack salted passwords but it demonstrates how to do parallelization.
+While most inferior languages would require the programmer to do think about how to design the parallelism strategy around the algorithm,
+clearly superior Haskell makes it as easy as modifying one line of code to a single threaded version of the algorithm.
